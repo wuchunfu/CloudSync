@@ -55,7 +55,7 @@ func (w *Watch) WatchDir(dir string) {
 	go EventsHandler(w)
 }
 
-// Handle the watch events
+// EventsHandler Handle the watch events
 func EventsHandler(w *Watch) {
 	for {
 		select {
