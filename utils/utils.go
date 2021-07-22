@@ -36,7 +36,7 @@ func GetFileMd5(filePath string) string {
 	return hex.EncodeToString(sum)
 }
 
-var IgnoreFiles = []string{".git", ".idea", ".swp"}
+var IgnoreFiles = []string{".git", ".idea", ".swp", ".swx"}
 
 // IgnoreFile Check if the file is contains the ignore file
 func IgnoreFile(filename string) bool {

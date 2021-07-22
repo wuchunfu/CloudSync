@@ -1,0 +1,21 @@
+{
+  "Sftp": {
+    "Hostname": "10.1.1.10",
+    "Username": "root",
+    "Password": "root",
+    "SSHPort": 22
+  },
+  "Sync": [
+    {
+      "Name": "sync 1",
+      "SourcePath": "/tmp/test1",
+      "TargetPath": "/tmp/test1"
+    },
+    {
+      "Name": "sync 2",
+      "SourcePath": "/tmp/test2",
+      "TargetPath": "/tmp/test2"
+    }
+  ],
+  "LogPath": "/tmp/logs/log.txt"
+}

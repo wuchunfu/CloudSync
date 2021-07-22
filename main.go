@@ -1,35 +1,43 @@
 package main
 
 import (
-	"github.com/fsnotify/fsnotify"
+	"github.com/wuchunfu/CloudSync/config"
 	"github.com/wuchunfu/CloudSync/handler/watchFile"
+	"github.com/wuchunfu/CloudSync/utils/sftpUtils"
 	"log"
 	"os"
 	"os/signal"
 )
 
 func main() {
-	watch, err := fsnotify.NewWatcher()
-	if err != nil {
-		log.Fatal("NewWatcher failed: ", err)
-		return
+
+	go func() {
+		ch := make(chan os.Signal)
+		// 获取程序退出信号
+		signal.Notify(ch, os.Interrupt, os.Kill)
+		<-ch
+		log.Println("server exit")
+		os.Exit(1)
+	}()
+
+	watch := watchFile.NewNotifyFile()
+	for _, v := range config.GlobalObject.Sync {
+		// 添加监控目录
+		watch.WatchDir(v.SourcePath, v.TargetPath)
 	}
 
-	w := watchFile.Watch{
-		Watch: watch,
-	}
+	sftpClient := sftpUtils.NewSftpHandler()
 
-	defer func(Watch *fsnotify.Watcher) {
-		err := Watch.Close()
-		if err != nil {
-			log.Fatal(err)
+	go func(*watchFile.NotifyFile) {
+		for {
+			select {
+			case path := <-watch.Path:
+				sftpClient.Upload(path.Path, path.TargetPath)
+			default:
+				continue
+			}
 		}
-	}(w.Watch)
+	}(watch)
 
-	w.WatchDir("/tmp/test")
-
-	// 终止信号
-	done := make(chan os.Signal, 1)
-	signal.Notify(done, os.Interrupt, os.Kill)
-	<-done
+	select {}
 }
