@@ -1,6 +1,8 @@
 package main
 
 import (
+	"container/list"
+	"github.com/wuchunfu/CloudSync/common"
 	"github.com/wuchunfu/CloudSync/config"
 	"github.com/wuchunfu/CloudSync/handler/watchFile"
 	"github.com/wuchunfu/CloudSync/utils/sftpUtils"
@@ -10,6 +12,10 @@ import (
 )
 
 func main() {
+
+	common.Md5Map = make(map[string]string)
+	common.WatcherMap = make(map[string]bool) // 监听的文件夹列表
+	common.ChangedMap = make(map[int]*list.List)
 
 	go func() {
 		ch := make(chan os.Signal)
@@ -38,6 +44,10 @@ func main() {
 			}
 		}
 	}(watch)
+
+	// 重新加载所有MD5,生成新的的csv文件中
+	watchFile.OutPutToFile()
+	log.Println("load scv file done!")
 
 	select {}
 }
