@@ -35,7 +35,7 @@ var GlobalObject *Global
 
 //Reload 读取用户的配置文件
 func (global *Global) Reload() {
-	data, err := os.ReadFile("/Users/wuchunfu/workspace/learning/codespace/CloudSync/conf/conf.json")
+	data, err := os.ReadFile("conf/conf.json")
 	if err != nil {
 		panic(err)
 	}
