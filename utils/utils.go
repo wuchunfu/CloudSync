@@ -12,10 +12,7 @@ import (
 // IsDir 判断是否是一个目录
 func IsDir(filePath string) bool {
 	file, err := os.Stat(filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return file.IsDir()
+	return err == nil && file.IsDir()
 }
 
 // GetFullPath 获取绝对路径
