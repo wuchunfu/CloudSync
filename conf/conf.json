@@ -17,5 +17,12 @@
       "TargetPath": "/tmp/test2"
     }
   ],
+  "IgnoreFiles": [
+    ".svn",
+    ".git",
+    ".idea",
+    ".swp",
+    ".swx"
+  ],
   "LogPath": "/tmp/logs/log.txt"
 }

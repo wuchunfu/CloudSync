@@ -7,12 +7,13 @@ import (
 
 // Global 定义全局常量 用户根据 conf 里的文件 conf.json 来配置
 type Global struct {
-	Name    string
-	Version string
-	Host    string
-	Sftp    GlobalSftpMap
-	Sync    []GlobalSyncMap
-	LogPath string
+	Name        string
+	Version     string
+	Host        string
+	Sftp        GlobalSftpMap
+	Sync        []GlobalSyncMap
+	LogPath     string
+	IgnoreFiles []string
 }
 
 // GlobalSftpMap sftp当前服务器主机
@@ -33,7 +34,7 @@ type GlobalSyncMap struct {
 // GlobalObject 全局配置
 var GlobalObject *Global
 
-//Reload 读取用户的配置文件
+// Reload 读取用户的配置文件
 func (global *Global) Reload() {
 	data, err := os.ReadFile("conf/conf.json")
 	if err != nil {

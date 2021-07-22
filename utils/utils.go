@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	"github.com/wuchunfu/CloudSync/config"
 	"io"
 	"log"
 	"os"
@@ -59,11 +60,11 @@ func GenerateMd5(filePath string) string {
 	return fmt.Sprintf("%x", md5hash.Sum([]byte("")))
 }
 
-var IgnoreFiles = []string{".git", ".idea", ".swp", ".swx"}
+//var IgnoreFiles = []string{".git", ".idea", ".swp", ".swx"}
 
 // IgnoreFile Check if the file is contains the ignore file
 func IgnoreFile(filename string) bool {
-	for _, ignoreFile := range IgnoreFiles {
+	for _, ignoreFile := range config.GlobalObject.IgnoreFiles {
 		if strings.Contains(filename, ignoreFile) {
 			return true
 		}
