@@ -5,7 +5,8 @@ import (
 	"encoding/csv"
 	"github.com/fsnotify/fsnotify"
 	"github.com/wuchunfu/CloudSync/common"
-	"github.com/wuchunfu/CloudSync/utils"
+	"github.com/wuchunfu/CloudSync/utils/cryptoUtils"
+	"github.com/wuchunfu/CloudSync/utils/fileUtils"
 	"log"
 	"os"
 	"path/filepath"
@@ -37,7 +38,7 @@ func NewNotifyFile() *NotifyFile {
 
 // WatchDir a directory
 func (notifyFile *NotifyFile) WatchDir(sourcePath string, targetPath string) {
-	fullPath := utils.GetFullPath(sourcePath)
+	fullPath := fileUtils.GetFullPath(sourcePath)
 	log.Println("Watching:", fullPath)
 	// Walk all directory
 	err := filepath.Walk(fullPath, func(path string, info os.FileInfo, err error) error {
@@ -52,7 +53,7 @@ func (notifyFile *NotifyFile) WatchDir(sourcePath string, targetPath string) {
 			}
 		}
 		// 生成 MD5 值
-		if md5Str := utils.GenerateMd5(path); md5Str != "" {
+		if md5Str := cryptoUtils.GenerateMd5(path); md5Str != "" {
 			common.Md5Map[path] = md5Str
 		}
 		return nil
@@ -74,13 +75,13 @@ func (notifyFile *NotifyFile) WatchEvents(sourcePath string, targetPath string) 
 			//log.Println("event:", event)
 			// Create event
 			if event.Op&fsnotify.Create == fsnotify.Create {
-				if !utils.IgnoreFile(event.Name) {
+				if !fileUtils.IgnoreFile(event.Name) {
 					log.Println(">>", event.Name, "[create]")
 					// 获取新创建文件的信息, 如果是目录, 则加入监控中
-					if utils.IsDir(event.Name) {
+					if fileUtils.IsDir(event.Name) {
 						notifyFile.LetItWatcher(event.Name)
 					}
-					newMd5Str := utils.GenerateMd5(event.Name)
+					newMd5Str := cryptoUtils.GenerateMd5(event.Name)
 					if len(newMd5Str) > 0 {
 						common.Md5Map[event.Name] = newMd5Str
 						LetItChanged(1, event.Name)
@@ -91,18 +92,18 @@ func (notifyFile *NotifyFile) WatchEvents(sourcePath string, targetPath string) 
 
 			// write event
 			if event.Op&fsnotify.Write == fsnotify.Write {
-				if !utils.IgnoreFile(event.Name) {
+				if !fileUtils.IgnoreFile(event.Name) {
 					log.Println(">>", event.Name, "[edit]")
 					// 判断文件是否存在
 					if oldMd5, ok := common.Md5Map[event.Name]; ok {
 						// 判断修改前和修改后的 md5 是否一致
-						newMd5Str := utils.GenerateMd5(event.Name)
+						newMd5Str := cryptoUtils.GenerateMd5(event.Name)
 						if oldMd5 != newMd5Str {
 							common.Md5Map[event.Name] = newMd5Str
 							LetItChanged(1, event.Name)
 						}
 					} else {
-						common.Md5Map[event.Name] = utils.GenerateMd5(event.Name)
+						common.Md5Map[event.Name] = cryptoUtils.GenerateMd5(event.Name)
 						LetItChanged(1, event.Name)
 					}
 					go notifyFile.PushEventChannel(event.Name, fsnotify.Write, "写入文件", sourcePath, targetPath)
@@ -111,7 +112,7 @@ func (notifyFile *NotifyFile) WatchEvents(sourcePath string, targetPath string) 
 
 			// delete event
 			if event.Op&fsnotify.Remove == fsnotify.Remove {
-				if !utils.IgnoreFile(event.Name) {
+				if !fileUtils.IgnoreFile(event.Name) {
 					log.Println(">>", event.Name, "[remove]")
 					if _, ok := common.Md5Map[event.Name]; ok {
 						delete(common.Md5Map, event.Name)
@@ -122,7 +123,7 @@ func (notifyFile *NotifyFile) WatchEvents(sourcePath string, targetPath string) 
 
 			// Rename
 			if event.Op&fsnotify.Rename == fsnotify.Rename {
-				if !utils.IgnoreFile(event.Name) {
+				if !fileUtils.IgnoreFile(event.Name) {
 					log.Println(">>", event.Name, "[rename]")
 					if _, ok := common.Md5Map[event.Name]; ok {
 						delete(common.Md5Map, event.Name)
@@ -133,7 +134,7 @@ func (notifyFile *NotifyFile) WatchEvents(sourcePath string, targetPath string) 
 			}
 			// Chmod
 			if event.Op&fsnotify.Chmod == fsnotify.Chmod {
-				if !utils.IgnoreFile(event.Name) {
+				if !fileUtils.IgnoreFile(event.Name) {
 					log.Println(">>", event.Name, "[chmod]")
 					if _, ok := common.Md5Map[event.Name]; ok {
 						LetItChanged(5, event.Name)
