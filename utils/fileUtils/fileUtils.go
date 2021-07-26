@@ -4,7 +4,7 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
-	"github.com/wuchunfu/CloudSync/config"
+	"github.com/wuchunfu/CloudSync/middleware/config"
 	"io"
 	"os"
 	"path/filepath"

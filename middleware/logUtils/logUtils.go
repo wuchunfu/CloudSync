@@ -1,7 +1,7 @@
 package logUtils
 
 import (
-	"github.com/wuchunfu/CloudSync/config"
+	"github.com/wuchunfu/CloudSync/middleware/config"
 	"log"
 	"os"
 )

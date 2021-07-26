@@ -3,7 +3,7 @@ package sftpUtils
 import (
 	"fmt"
 	"github.com/pkg/sftp"
-	"github.com/wuchunfu/CloudSync/config"
+	"github.com/wuchunfu/CloudSync/middleware/config"
 	"github.com/wuchunfu/CloudSync/middleware/logUtils"
 	"golang.org/x/crypto/ssh"
 	"io"

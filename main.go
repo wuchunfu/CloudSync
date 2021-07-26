@@ -3,8 +3,8 @@ package main
 import (
 	"container/list"
 	"github.com/wuchunfu/CloudSync/common"
-	"github.com/wuchunfu/CloudSync/config"
 	"github.com/wuchunfu/CloudSync/handler/watchFile"
+	"github.com/wuchunfu/CloudSync/middleware/config"
 	"github.com/wuchunfu/CloudSync/utils/sftpUtils"
 	"log"
 	"os"
