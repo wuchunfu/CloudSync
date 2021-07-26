@@ -142,7 +142,7 @@ func (notifyFile *NotifyFile) WatchEvents(sourcePath string, targetPath string) 
 				}
 			}
 		case err := <-notifyFile.watch.Errors:
-			log.Println("======", err)
+			log.Println(err)
 			return
 		}
 	}
