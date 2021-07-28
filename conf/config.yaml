@@ -1,0 +1,20 @@
+sftp:
+  hostname: "10.1.1.10"
+  sshPort: 22
+  username: "root"
+  password: "root"
+
+sync:
+  - name: "sync 1"
+    sourcePath: "/tmp/test1"
+    targetPath: "/tmp/test1"
+  - name: "sync 2"
+    sourcePath: "/tmp/test2"
+    targetPath: "/tmp/test2"
+
+ignoreFiles:
+  - ".svn"
+  - ".git"
+  - ".idea"
+  - ".swp"
+  - ".swx"

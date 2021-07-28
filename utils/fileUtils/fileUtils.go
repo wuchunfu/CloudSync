@@ -4,11 +4,9 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
-	"github.com/wuchunfu/CloudSync/middleware/config"
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 // IsDir 判断所给路径是否为文件夹
@@ -35,15 +33,9 @@ func IsFile(filePath string) bool {
 	return !IsDir(filePath)
 }
 
-// FileExist 判断所给路径文件/文件夹是否存在
-func FileExist(path string) bool {
-	_, err := os.Lstat(path)
-	return !os.IsNotExist(err)
-}
-
-// PathExists return true if given path exist.
-func PathExists(filePath string) bool {
-	_, err := os.Stat(filePath)
+// FilePathExists Judge whether the given path file / folder exists.
+func FilePathExists(filePath string) bool {
+	_, err := os.Lstat(filePath)
 	if err != nil && os.IsNotExist(err) {
 		return false
 	}
@@ -91,16 +83,4 @@ func GetFileSize(filename string) int64 {
 		return 0
 	}
 	return result
-}
-
-//var IgnoreFiles = []string{".git", ".idea", ".swp", ".swx"}
-
-// IgnoreFile Check if the file is contains the ignore file
-func IgnoreFile(filename string) bool {
-	for _, ignoreFile := range config.GlobalObject.IgnoreFiles {
-		if strings.Contains(filename, ignoreFile) {
-			return true
-		}
-	}
-	return false
 }

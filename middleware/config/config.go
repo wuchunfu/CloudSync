@@ -1,60 +1,80 @@
 package config
 
 import (
-	"encoding/json"
+	"fmt"
+	"github.com/fsnotify/fsnotify"
+	logger "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
+	"github.com/wuchunfu/CloudSync/utils/fileUtils"
 	"os"
 )
 
-// Global 定义全局常量 用户根据 conf 里的文件 conf.json 来配置
-type Global struct {
-	Name        string
-	Version     string
-	Host        string
-	Sftp        GlobalSftpMap
-	Sync        []GlobalSyncMap
-	LogPath     string
-	IgnoreFiles []string
+// Sftp sftp server host
+type Sftp struct {
+	Hostname string `yaml:"hostname"`
+	SshPort  int    `yaml:"sshPort"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
 }
 
-// GlobalSftpMap sftp当前服务器主机
-type GlobalSftpMap struct {
-	Hostname string
-	Username string
-	Password string
-	SSHPort  int
+// Sync sync path parameters
+type Sync struct {
+	Name       string `yaml:"name"`
+	SourcePath string `yaml:"sourcePath"`
+	TargetPath string `yaml:"targetPath"`
 }
 
-// GlobalSyncMap 同步路径参数
-type GlobalSyncMap struct {
-	Name       string
-	SourcePath string
-	TargetPath string
+// YamlSetting global constants are defined and configured by the user according to the file conf.yaml in conf
+type YamlSetting struct {
+	Sftp        Sftp     `yaml:"sftp"`
+	Sync        []Sync   `yaml:"sync"`
+	IgnoreFiles []string `yaml:"ignoreFiles"`
 }
 
-// GlobalObject 全局配置
-var GlobalObject *Global
+var (
+	Vip        = viper.New()
+	ConfigFile = ""
+	// ServerSetting global config
+	ServerSetting = new(YamlSetting)
+)
 
-// Reload 读取用户的配置文件
-func (global *Global) Reload() {
-	data, err := os.ReadFile("conf/conf.json")
+// InitConfig reads in config file and ENV variables if set.
+func InitConfig() {
+	if ConfigFile != "" {
+		if !fileUtils.FilePathExists(ConfigFile) {
+			logger.Errorf("No such file or directory: %s", ConfigFile)
+			os.Exit(1)
+		} else {
+			// Use config file from the flag.
+			Vip.SetConfigFile(ConfigFile)
+			Vip.SetConfigType("yaml")
+		}
+	} else {
+		logger.Errorf("Could not find config file: %s", ConfigFile)
+		os.Exit(1)
+	}
+	// If a config file is found, read it in.
+	err := Vip.ReadInConfig()
 	if err != nil {
-		panic(err)
+		logger.Errorf("Failed to get config file: %s", ConfigFile)
 	}
-	// 将json数据解析到struct中
-	err = json.Unmarshal(data, &GlobalObject)
-	if err != nil {
-		panic(err)
-	}
+	Vip.WatchConfig()
+	Vip.OnConfigChange(func(e fsnotify.Event) {
+		logger.Infof("Config file changed: %s\n", e.Name)
+		fmt.Printf("Config file changed: %s\n", e.Name)
+		ServerSetting = GetConfig(Vip)
+	})
+	Vip.AllSettings()
+	ServerSetting = GetConfig(Vip)
 }
 
-// 提供init方法, 默认加载
-func init() {
-	// 初始化GlobalObject变量,设置一些默认值
-	GlobalObject = &Global{
-		Name:    "ServerApp",
-		Version: "V1.0",
-		Host:    "0.0.0.0",
+// GetConfig 解析配置文件，反序列化
+func GetConfig(vip *viper.Viper) *YamlSetting {
+	setting := new(YamlSetting)
+	// 解析配置文件，反序列化
+	if err := vip.Unmarshal(setting); err != nil {
+		logger.Errorf("Unmarshal yaml faild: %s", err)
+		os.Exit(1)
 	}
-	// 从配置文件中加载一些用户配置的参数
-	GlobalObject.Reload()
+	return setting
 }

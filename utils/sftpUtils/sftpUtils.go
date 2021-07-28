@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/pkg/sftp"
 	"github.com/wuchunfu/CloudSync/middleware/config"
-	"github.com/wuchunfu/CloudSync/middleware/logUtils"
 	"golang.org/x/crypto/ssh"
 	"io"
 	"log"
@@ -22,7 +21,7 @@ type SftpHandler struct {
 // NewSftpHandler 初始化
 func NewSftpHandler() *SftpHandler {
 	sftpHandler := new(SftpHandler)
-	sftpHandler.SftpClient, _ = connect(config.GlobalObject.Sftp.Hostname, config.GlobalObject.Sftp.SSHPort, config.GlobalObject.Sftp.Username, config.GlobalObject.Sftp.Password)
+	sftpHandler.SftpClient, _ = connect(config.ServerSetting.Sftp.Hostname, config.ServerSetting.Sftp.SshPort, config.ServerSetting.Sftp.Username, config.ServerSetting.Sftp.Password)
 	return sftpHandler
 }
 
@@ -116,7 +115,7 @@ func (sftpHandler *SftpHandler) uploadFile(localPath string, remotePath string) 
 		log.Fatal(writeErr)
 		return
 	}
-	logUtils.Logger.Println("上传：" + localPath)
+	//logUtils.Logger.Println("上传：" + localPath)
 }
 
 //uploadDirectory 遍历上传远程文件夹
@@ -149,7 +148,7 @@ func (sftpHandler *SftpHandler) uploadDirectory(localPath string, remotePath str
 		}
 	}
 
-	logUtils.Logger.Println("上传本地目录：" + localPath + "远端目录：" + remotePath)
+	//logUtils.Logger.Println("上传本地目录：" + localPath + "远端目录：" + remotePath)
 }
 
 // Upload 判断是否是路径属性

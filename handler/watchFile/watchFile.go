@@ -5,6 +5,8 @@ import (
 	"encoding/csv"
 	"github.com/fsnotify/fsnotify"
 	"github.com/wuchunfu/CloudSync/common"
+	"github.com/wuchunfu/CloudSync/middleware/config"
+	"github.com/wuchunfu/CloudSync/utils"
 	"github.com/wuchunfu/CloudSync/utils/cryptoUtils"
 	"github.com/wuchunfu/CloudSync/utils/fileUtils"
 	"log"
@@ -15,7 +17,7 @@ import (
 
 // NotifyFile 包的指针结构
 type NotifyFile struct {
-	watch *fsnotify.Watcher
+	Watch *fsnotify.Watcher
 	Path  chan ActionPath
 }
 
@@ -23,7 +25,7 @@ type NotifyFile struct {
 type ActionPath struct {
 	Path       string
 	ActionType fsnotify.Op
-	desc       string
+	Desc       string
 	SourcePath string
 	TargetPath string
 }
@@ -31,7 +33,7 @@ type ActionPath struct {
 // NewNotifyFile 返回 fsnotify 对象指针
 func NewNotifyFile() *NotifyFile {
 	notifyFile := new(NotifyFile)
-	notifyFile.watch, _ = fsnotify.NewWatcher()
+	notifyFile.Watch, _ = fsnotify.NewWatcher()
 	notifyFile.Path = make(chan ActionPath, 10)
 	return notifyFile
 }
@@ -40,6 +42,11 @@ func NewNotifyFile() *NotifyFile {
 func (notifyFile *NotifyFile) WatchDir(sourcePath string, targetPath string) {
 	fullPath := fileUtils.GetFullPath(sourcePath)
 	log.Println("Watching:", fullPath)
+	exists := fileUtils.FilePathExists(fullPath)
+	if !exists {
+		log.Fatalf("The file or path does not exist: %s", fullPath)
+		return
+	}
 	// Walk all directory
 	err := filepath.Walk(fullPath, func(path string, info os.FileInfo, err error) error {
 		// 判断是否为目录, 监控目录以及目录下文件, 目录下的文件也在监控范围内
@@ -71,11 +78,11 @@ func (notifyFile *NotifyFile) WatchDir(sourcePath string, targetPath string) {
 func (notifyFile *NotifyFile) WatchEvents(sourcePath string, targetPath string) {
 	for {
 		select {
-		case event := <-notifyFile.watch.Events:
+		case event := <-notifyFile.Watch.Events:
 			//log.Println("event:", event)
 			// Create event
 			if event.Op&fsnotify.Create == fsnotify.Create {
-				if !fileUtils.IgnoreFile(event.Name) {
+				if !IgnoreFile(event.Name) {
 					log.Println(">>", event.Name, "[create]")
 					// 获取新创建文件的信息, 如果是目录, 则加入监控中
 					if fileUtils.IsDir(event.Name) {
@@ -92,7 +99,7 @@ func (notifyFile *NotifyFile) WatchEvents(sourcePath string, targetPath string) 
 
 			// write event
 			if event.Op&fsnotify.Write == fsnotify.Write {
-				if !fileUtils.IgnoreFile(event.Name) {
+				if !IgnoreFile(event.Name) {
 					log.Println(">>", event.Name, "[edit]")
 					// 判断文件是否存在
 					if oldMd5, ok := common.Md5Map[event.Name]; ok {
@@ -112,7 +119,7 @@ func (notifyFile *NotifyFile) WatchEvents(sourcePath string, targetPath string) 
 
 			// delete event
 			if event.Op&fsnotify.Remove == fsnotify.Remove {
-				if !fileUtils.IgnoreFile(event.Name) {
+				if !IgnoreFile(event.Name) {
 					log.Println(">>", event.Name, "[remove]")
 					if _, ok := common.Md5Map[event.Name]; ok {
 						delete(common.Md5Map, event.Name)
@@ -123,7 +130,7 @@ func (notifyFile *NotifyFile) WatchEvents(sourcePath string, targetPath string) 
 
 			// Rename
 			if event.Op&fsnotify.Rename == fsnotify.Rename {
-				if !fileUtils.IgnoreFile(event.Name) {
+				if !IgnoreFile(event.Name) {
 					log.Println(">>", event.Name, "[rename]")
 					if _, ok := common.Md5Map[event.Name]; ok {
 						delete(common.Md5Map, event.Name)
@@ -134,7 +141,7 @@ func (notifyFile *NotifyFile) WatchEvents(sourcePath string, targetPath string) 
 			}
 			// Chmod
 			if event.Op&fsnotify.Chmod == fsnotify.Chmod {
-				if !fileUtils.IgnoreFile(event.Name) {
+				if !IgnoreFile(event.Name) {
 					log.Println(">>", event.Name, "[chmod]")
 					if _, ok := common.Md5Map[event.Name]; ok {
 						LetItChanged(5, event.Name)
@@ -142,7 +149,7 @@ func (notifyFile *NotifyFile) WatchEvents(sourcePath string, targetPath string) 
 					go notifyFile.PushEventChannel(event.Name, fsnotify.Chmod, "修改权限", sourcePath, targetPath)
 				}
 			}
-		case err := <-notifyFile.watch.Errors:
+		case err := <-notifyFile.Watch.Errors:
 			log.Println(err)
 			return
 		}
@@ -154,7 +161,7 @@ func (notifyFile *NotifyFile) PushEventChannel(Path string, ActionType fsnotify.
 	notifyFile.Path <- ActionPath{
 		Path:       Path,
 		ActionType: ActionType,
-		desc:       desc,
+		Desc:       desc,
 		SourcePath: source,
 		TargetPath: target,
 	}
@@ -164,7 +171,7 @@ func (notifyFile *NotifyFile) PushEventChannel(Path string, ActionType fsnotify.
 func (notifyFile *NotifyFile) LetItWatcher(path string) {
 	if _, ok := common.WatcherMap[path]; !ok {
 		common.WatcherMap[path] = true
-		err := notifyFile.watch.Add(path)
+		err := notifyFile.Watch.Add(path)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -174,7 +181,7 @@ func (notifyFile *NotifyFile) LetItWatcher(path string) {
 // DeleteItWatcher 从监控集合中删除
 func (notifyFile *NotifyFile) DeleteItWatcher(path string) {
 	if _, ok := common.WatcherMap[path]; ok {
-		err := notifyFile.watch.Remove(path)
+		err := notifyFile.Watch.Remove(path)
 		if err != nil {
 			log.Println(err)
 			return
@@ -239,4 +246,9 @@ func OutPutToFile() {
 	writer.Write([]string{""})
 	writer.Write([]string{"文件变更历史："})
 	writer.Flush()
+}
+
+func IgnoreFile(fileName string) bool {
+	file := utils.IgnoreFile(config.ServerSetting.IgnoreFiles, fileName)
+	return file
 }
