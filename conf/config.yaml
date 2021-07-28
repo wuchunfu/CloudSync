@@ -18,3 +18,17 @@ ignoreFiles:
   - ".idea"
   - ".swp"
   - ".swx"
+
+log:
+  appName: app
+  development: true
+  # Either "error", "warn", "info", "debug", default is "info"
+  level: debug
+  logFileDir: ./logs
+  infoFileName: info.log
+  warnFileName: warn.log
+  errorFileName: error.log
+  debugFileName: debug.log
+  maxAge: 100
+  maxBackups: 60
+  maxSize: 30

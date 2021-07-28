@@ -24,11 +24,27 @@ type Sync struct {
 	TargetPath string `yaml:"targetPath"`
 }
 
+// Log log parameters
+type Log struct {
+	AppName       string `yaml:"appName"`
+	Development   bool   `yaml:"development"`
+	Level         string `yaml:"level"`
+	LogFileDir    string `yaml:"logFileDir"`
+	InfoFileName  string `yaml:"infoFileName"`
+	WarnFileName  string `yaml:"warnFileName"`
+	ErrorFileName string `yaml:"errorFileName"`
+	DebugFileName string `yaml:"debugFileName"`
+	MaxAge        int    `yaml:"maxAge"`
+	MaxBackups    int    `yaml:"maxBackups"`
+	MaxSize       int    `yaml:"maxSize"`
+}
+
 // YamlSetting global constants are defined and configured by the user according to the file conf.yaml in conf
 type YamlSetting struct {
 	Sftp        Sftp     `yaml:"sftp"`
 	Sync        []Sync   `yaml:"sync"`
 	IgnoreFiles []string `yaml:"ignoreFiles"`
+	Log         Log      `yaml:"log"`
 }
 
 var (
