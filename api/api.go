@@ -9,9 +9,12 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"runtime"
 )
 
 func Run() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
 	common.Md5Map = make(map[string]string)
 	common.WatcherMap = make(map[string]bool) // 监听的文件夹列表
 	common.ChangedMap = make(map[int]*list.List)
