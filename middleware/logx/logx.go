@@ -157,13 +157,15 @@ func (l *Logger) generateEncoderConfig() zapcore.EncoderConfig {
 
 	// 设置一些基本日志格式 具体含义还比较好理解，直接看zap源码也不难懂
 	return zapcore.EncoderConfig{
-		MessageKey:   "msg",
-		LevelKey:     "level",
-		TimeKey:      "ts",
-		CallerKey:    "file",
-		EncodeTime:   customTimeEncoder,
-		EncodeLevel:  customLevelEncoder,
-		EncodeCaller: encodeCaller,
+		MessageKey:    "msg",
+		LevelKey:      "level",
+		TimeKey:       "ts",
+		CallerKey:     "file",
+		StacktraceKey: "trace",
+		EncodeTime:    customTimeEncoder,
+		EncodeLevel:   customLevelEncoder,
+		EncodeCaller:  encodeCaller,
+		LineEnding:    zapcore.DefaultLineEnding,
 		EncodeDuration: func(d time.Duration, enc zapcore.PrimitiveArrayEncoder) {
 			enc.AppendInt64(int64(d) / 1000000)
 		},
