@@ -1,7 +1,7 @@
 package logx
 
 import (
-	"github.com/wuchunfu/CloudSync/middleware/config"
+	"github.com/wuchunfu/CloudSync/middleware/configx"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -226,7 +226,7 @@ func GetLogger() *zap.Logger {
 }
 
 // InitLog log instance init
-func InitLog(setting *config.Log) {
+func InitLog(setting *configx.Log) {
 	// 设置日志级别
 	level := strings.ToLower(strings.TrimSpace(setting.Level))
 	logLevel := zap.DebugLevel

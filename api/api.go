@@ -3,9 +3,9 @@ package api
 import (
 	"container/list"
 	"github.com/wuchunfu/CloudSync/common"
-	"github.com/wuchunfu/CloudSync/handler/watchFile"
-	"github.com/wuchunfu/CloudSync/middleware/config"
-	"github.com/wuchunfu/CloudSync/utils/sftpUtils"
+	"github.com/wuchunfu/CloudSync/handler/watchx"
+	"github.com/wuchunfu/CloudSync/middleware/configx"
+	"github.com/wuchunfu/CloudSync/utils/sftpx"
 	"log"
 	"os"
 	"os/signal"
@@ -28,15 +28,15 @@ func Run() {
 		os.Exit(1)
 	}()
 
-	watch := watchFile.NewNotifyFile()
-	for _, v := range config.ServerSetting.Sync {
+	watch := watchx.NewNotifyFile()
+	for _, v := range configx.ServerSetting.Sync {
 		// 添加监控目录
 		watch.WatchDir(v.SourcePath, v.TargetPath)
 	}
 
-	sftpClient := sftpUtils.NewSftpHandler()
+	sftpClient := sftpx.NewSftpHandler()
 
-	go func(*watchFile.NotifyFile) {
+	go func(*watchx.NotifyFile) {
 		for {
 			select {
 			case path := <-watch.Path:
@@ -48,7 +48,7 @@ func Run() {
 	}(watch)
 
 	// 重新加载所有MD5,生成新的的csv文件中
-	watchFile.OutPutToFile()
+	watchx.OutPutToFile()
 	log.Println("load scv file done!")
 
 	select {}

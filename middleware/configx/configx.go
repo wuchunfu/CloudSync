@@ -1,11 +1,11 @@
-package config
+package configx
 
 import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	logger "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"github.com/wuchunfu/CloudSync/utils/fileUtils"
+	"github.com/wuchunfu/CloudSync/utils/filex"
 	"os"
 )
 
@@ -57,7 +57,7 @@ var (
 // InitConfig reads in config file and ENV variables if set.
 func InitConfig() {
 	if ConfigFile != "" {
-		if !fileUtils.FilePathExists(ConfigFile) {
+		if !filex.FilePathExists(ConfigFile) {
 			logger.Errorf("No such file or directory: %s", ConfigFile)
 			os.Exit(1)
 		} else {

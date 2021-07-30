@@ -1,4 +1,4 @@
-package requestUtils
+package requestx
 
 import (
 	"testing"

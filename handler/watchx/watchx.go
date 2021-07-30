@@ -1,14 +1,14 @@
-package watchFile
+package watchx
 
 import (
 	"container/list"
 	"encoding/csv"
 	"github.com/fsnotify/fsnotify"
 	"github.com/wuchunfu/CloudSync/common"
-	"github.com/wuchunfu/CloudSync/middleware/config"
+	"github.com/wuchunfu/CloudSync/middleware/configx"
 	"github.com/wuchunfu/CloudSync/utils"
-	"github.com/wuchunfu/CloudSync/utils/cryptoUtils"
-	"github.com/wuchunfu/CloudSync/utils/fileUtils"
+	"github.com/wuchunfu/CloudSync/utils/cryptox"
+	"github.com/wuchunfu/CloudSync/utils/filex"
 	"log"
 	"os"
 	"path/filepath"
@@ -40,9 +40,9 @@ func NewNotifyFile() *NotifyFile {
 
 // WatchDir a directory
 func (notifyFile *NotifyFile) WatchDir(sourcePath string, targetPath string) {
-	fullPath := fileUtils.GetFullPath(sourcePath)
+	fullPath := filex.GetFullPath(sourcePath)
 	log.Println("Watching:", fullPath)
-	exists := fileUtils.FilePathExists(fullPath)
+	exists := filex.FilePathExists(fullPath)
 	if !exists {
 		log.Fatalf("The file or path does not exist: %s", fullPath)
 		return
@@ -60,7 +60,7 @@ func (notifyFile *NotifyFile) WatchDir(sourcePath string, targetPath string) {
 			}
 		}
 		// 生成 MD5 值
-		if md5Str := cryptoUtils.GenerateMd5(path); md5Str != "" {
+		if md5Str := cryptox.GenerateMd5(path); md5Str != "" {
 			common.Md5Map[path] = md5Str
 		}
 		return nil
@@ -85,10 +85,10 @@ func (notifyFile *NotifyFile) WatchEvents(sourcePath string, targetPath string) 
 				if !IgnoreFile(event.Name) {
 					log.Println(">>", event.Name, "[create]")
 					// 获取新创建文件的信息, 如果是目录, 则加入监控中
-					if fileUtils.IsDir(event.Name) {
+					if filex.IsDir(event.Name) {
 						notifyFile.LetItWatcher(event.Name)
 					}
-					newMd5Str := cryptoUtils.GenerateMd5(event.Name)
+					newMd5Str := cryptox.GenerateMd5(event.Name)
 					if len(newMd5Str) > 0 {
 						common.Md5Map[event.Name] = newMd5Str
 						LetItChanged(1, event.Name)
@@ -104,13 +104,13 @@ func (notifyFile *NotifyFile) WatchEvents(sourcePath string, targetPath string) 
 					// 判断文件是否存在
 					if oldMd5, ok := common.Md5Map[event.Name]; ok {
 						// 判断修改前和修改后的 md5 是否一致
-						newMd5Str := cryptoUtils.GenerateMd5(event.Name)
+						newMd5Str := cryptox.GenerateMd5(event.Name)
 						if oldMd5 != newMd5Str {
 							common.Md5Map[event.Name] = newMd5Str
 							LetItChanged(1, event.Name)
 						}
 					} else {
-						common.Md5Map[event.Name] = cryptoUtils.GenerateMd5(event.Name)
+						common.Md5Map[event.Name] = cryptox.GenerateMd5(event.Name)
 						LetItChanged(1, event.Name)
 					}
 					go notifyFile.PushEventChannel(event.Name, fsnotify.Write, "写入文件", sourcePath, targetPath)
@@ -249,6 +249,6 @@ func OutPutToFile() {
 }
 
 func IgnoreFile(fileName string) bool {
-	file := utils.IgnoreFile(config.ServerSetting.IgnoreFiles, fileName)
+	file := utils.IgnoreFile(configx.ServerSetting.IgnoreFiles, fileName)
 	return file
 }

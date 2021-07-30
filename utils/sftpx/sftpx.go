@@ -1,9 +1,9 @@
-package sftpUtils
+package sftpx
 
 import (
 	"fmt"
 	"github.com/pkg/sftp"
-	"github.com/wuchunfu/CloudSync/middleware/config"
+	"github.com/wuchunfu/CloudSync/middleware/configx"
 	"golang.org/x/crypto/ssh"
 	"io"
 	"log"
@@ -21,7 +21,7 @@ type SftpHandler struct {
 // NewSftpHandler 初始化
 func NewSftpHandler() *SftpHandler {
 	sftpHandler := new(SftpHandler)
-	sftpHandler.SftpClient, _ = connect(config.ServerSetting.Sftp.Hostname, config.ServerSetting.Sftp.SshPort, config.ServerSetting.Sftp.Username, config.ServerSetting.Sftp.Password)
+	sftpHandler.SftpClient, _ = connect(configx.ServerSetting.Sftp.Hostname, configx.ServerSetting.Sftp.SshPort, configx.ServerSetting.Sftp.Username, configx.ServerSetting.Sftp.Password)
 	return sftpHandler
 }
 

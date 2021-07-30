@@ -1,4 +1,4 @@
-package fileUtils
+package filex
 
 import (
 	"crypto/sha1"
