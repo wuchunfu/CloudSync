@@ -21,7 +21,12 @@ type SftpHandler struct {
 // NewSftpHandler 初始化
 func NewSftpHandler() *SftpHandler {
 	sftpHandler := new(SftpHandler)
-	sftpHandler.SftpClient, _ = connect(configx.ServerSetting.Sftp.Hostname, configx.ServerSetting.Sftp.SshPort, configx.ServerSetting.Sftp.Username, configx.ServerSetting.Sftp.Password)
+	client, err := connect(configx.ServerSetting.Sftp.Hostname, configx.ServerSetting.Sftp.SshPort, configx.ServerSetting.Sftp.Username, configx.ServerSetting.Sftp.Password)
+	if err != nil {
+		log.Fatalf("connect fail: %s", err)
+		return nil
+	}
+	sftpHandler.SftpClient = client
 	return sftpHandler
 }
 
