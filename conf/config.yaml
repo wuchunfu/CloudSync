@@ -33,13 +33,22 @@ log:
   maxBackups: 60
   maxSize: 30
 
+# 消息推送
 notify:
+  # 是否开启推送服务
   isEnable: true
+  # 目前支持 smtp 邮箱,dingtalk
   notifyType: email
   email:
+    # 邮件主题
     emailSubject: "文件发生变更"
+    # 邮箱域名 smtp.xx.com
     emailHost: "smtp.163.com"
+    # 通信端口
     emailPort: 25
+    # 邮箱地址 xxx@xx.com
     emailUser: "xxx@163.com"
+    # 邮箱授权码（并不一定是邮箱密码） xxxxxx
     emailPwd: "xxxxxx"
+    # 邮箱推送消息接收人
     toEmail: "xxx@qq.com"
