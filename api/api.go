@@ -51,5 +51,8 @@ func Run() {
 	watchx.OutPutToFile()
 	log.Println("load scv file done!")
 
+	// 定时任务
+	go watchx.TimerCheck()
+
 	select {}
 }

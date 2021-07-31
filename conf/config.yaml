@@ -32,3 +32,14 @@ log:
   maxAge: 100
   maxBackups: 60
   maxSize: 30
+
+notify:
+  isEnable: true
+  notifyType: email
+  email:
+    emailSubject: "文件发生变更"
+    emailHost: "smtp.163.com"
+    emailPort: 25
+    emailUser: "xxx@163.com"
+    emailPwd: "xxxxxx"
+    toEmail: "xxx@qq.com"

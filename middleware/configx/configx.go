@@ -39,12 +39,30 @@ type Log struct {
 	MaxSize       int    `yaml:"maxSize"`
 }
 
+// Notify send massage notify
+type Notify struct {
+	IsEnable   bool   `yaml:"isEnable"`
+	NotifyType string `yaml:"notifyType"`
+	Email      Email  `yaml:"email"`
+}
+
+// Email notify
+type Email struct {
+	EmailSubject string `yaml:"emailSubject"`
+	EmailHost    string `yaml:"emailHost"`
+	EmailPort    int    `yaml:"emailPort"`
+	EmailUser    string `yaml:"emailUser"`
+	EmailPwd     string `yaml:"emailPwd"`
+	ToEmail      string `yaml:"toEmail"`
+}
+
 // YamlSetting global constants are defined and configured by the user according to the file conf.yaml in conf
 type YamlSetting struct {
 	Sftp        Sftp     `yaml:"sftp"`
 	Sync        []Sync   `yaml:"sync"`
 	IgnoreFiles []string `yaml:"ignoreFiles"`
 	Log         Log      `yaml:"log"`
+	Notify      Notify   `yaml:"notify"`
 }
 
 var (

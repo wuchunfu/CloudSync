@@ -6,6 +6,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"github.com/wuchunfu/CloudSync/common"
 	"github.com/wuchunfu/CloudSync/middleware/configx"
+	"github.com/wuchunfu/CloudSync/middleware/notifyx"
 	"github.com/wuchunfu/CloudSync/utils"
 	"github.com/wuchunfu/CloudSync/utils/cryptox"
 	"github.com/wuchunfu/CloudSync/utils/filex"
@@ -251,4 +252,30 @@ func OutPutToFile() {
 func IgnoreFile(fileName string) bool {
 	file := utils.IgnoreFile(configx.ServerSetting.IgnoreFiles, fileName)
 	return file
+}
+
+// TimerCheck 定时检测
+func TimerCheck() {
+	timer := time.NewTicker(10 * time.Second)
+	for {
+		select {
+		case <-timer.C:
+			common.Locker.Lock()
+			content := ""
+			for k, v := range common.ChangedMap {
+				content += common.PrefixMap[k] + "列表: <br>"
+				for el := v.Front(); el != nil; el = el.Next() {
+					content += el.Value.(string) + "<br>"
+				}
+				content += "<br>"
+			}
+			if len(content) > 0 {
+				common.ChangedMap = make(map[int]*list.List)
+				setting := configx.ServerSetting
+				// 发送邮件
+				go notifyx.SendMessage(&setting.Notify, content)
+			}
+			common.Locker.Unlock()
+		}
+	}
 }
