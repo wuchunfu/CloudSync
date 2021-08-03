@@ -16,8 +16,15 @@ func SendMessage(setting *configx.Notify, msg string) {
 			user := setting.Email.EmailUser
 			pwd := setting.Email.EmailPwd
 			to := setting.Email.ToEmail
-			message := email.NewEmailMessage(user, subject, "text/html", msg, "", []string{to}, []string{})
-			client := email.NewEmailClient(host, port, user, pwd, message)
+
+			message := &email.MessageType{
+				From:        user,
+				Subject:     subject,
+				ContentType: "text/html",
+				Content:     msg,
+				To:          []string{to},
+			}
+			client := email.NewClient(host, port, user, pwd, message)
 			ok, err := client.SendMessage()
 			if err != nil {
 				log.Printf("send failed, error: %v", err)

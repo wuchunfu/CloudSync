@@ -7,49 +7,31 @@ import (
 
 // MessageType 内容
 type MessageType struct {
-	From        string
-	To          []string
-	Cc          []string
-	Subject     string
-	ContentType string
-	Content     string
-	Attach      string
+	From        string   // 发件人
+	To          []string // 收件人
+	Cc          []string // 抄送人
+	Subject     string   // 标题
+	ContentType string   // 内容的类型 text/plain text/html
+	Content     string   // 内容
+	Attach      string   // 附件
 }
 
 // ClientType 发送客户端
 type ClientType struct {
-	Host     string
-	Port     int
-	Username string
-	Password string
-	Message  *MessageType
+	Host     string       // smtp地址
+	Port     int          // 端口
+	Username string       // 用户名
+	Password string       // 密码
+	Message  *MessageType // 消息
 }
 
-// NewEmailMessage 返回消息对象
-// from: 发件人
-// subject: 标题
-// contentType: 内容的类型 text/plain text/html
-// attach: 附件
-// to: 收件人
-// cc: 抄送人
-func NewEmailMessage(from string, subject string, contentType string, content string, attach string, to []string, cc []string) *MessageType {
-	return &MessageType{
-		From:        from,
-		Subject:     subject,
-		ContentType: contentType,
-		Content:     content,
-		To:          to,
-		Cc:          cc,
-		Attach:      attach,
-	}
-}
-
-// NewEmailClient 返回一个邮件客户端
+// NewClient 返回一个邮件客户端
 // host smtp地址
+// port 端口
 // username 用户名
 // password 密码
-// port 端口
-func NewEmailClient(host string, port int, username string, password string, message *MessageType) *ClientType {
+// message 消息
+func NewClient(host string, port int, username string, password string, message *MessageType) *ClientType {
 	return &ClientType{
 		Host:     host,
 		Port:     port,
