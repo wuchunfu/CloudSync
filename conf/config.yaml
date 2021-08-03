@@ -39,6 +39,7 @@ notify:
   isEnable: true
   # 目前支持 smtp 邮箱,dingtalk
   notifyType: email
+  # smtp 邮箱配置
   email:
     # 邮件主题
     emailSubject: "文件发生变更"
