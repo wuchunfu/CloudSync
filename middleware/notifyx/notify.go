@@ -21,7 +21,6 @@ func SendMessage(setting *configx.Notify, msg string) {
 			ok, err := client.SendMessage()
 			if err != nil {
 				log.Printf("send failed, error: %v", err)
-				return
 			}
 			if ok {
 				log.Println("send successfully")
