@@ -53,3 +53,15 @@ notify:
     emailPwd: "xxxxxx"
     # 邮箱推送消息接收人
     toEmail: "xxx@qq.com"
+  # wechat 配置
+  wechat:
+    accessTokenUrl: "https://qyapi.weixin.qq.com/cgi-bin/gettoken"
+    sendUrl: "https://qyapi.weixin.qq.com/cgi-bin/message/send"
+    # 企业ID，获取方式参考：术语说明-corpid(https://work.weixin.qq.com/api/doc/90000/90135/91039#14953/corpid)
+    corpId: "xxxxxx"
+    # 应用的凭证密钥，获取方式参考：术语说明-secret(https://work.weixin.qq.com/api/doc/90000/90135/91039#14953/secret)
+    corpSecret: "xxxxxx"
+    # 指定接收消息的成员，成员ID列表（多个接收者用'|'分隔，最多支持1000个）。特殊情况：指定为"@all"，则向该企业应用的全部成员发送
+    toUser: "xxx"
+    # 企业应用的id，整型。企业内部开发，可在应用的设置页面查看
+    agentId: 1000000

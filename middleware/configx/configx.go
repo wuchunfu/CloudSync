@@ -44,6 +44,7 @@ type Notify struct {
 	IsEnable   bool   `yaml:"isEnable"`
 	NotifyType string `yaml:"notifyType"`
 	Email      Email  `yaml:"email"`
+	Wechat     Wechat `yaml:"wechat"`
 }
 
 // Email notify
@@ -54,6 +55,16 @@ type Email struct {
 	EmailUser    string `yaml:"emailUser"`
 	EmailPwd     string `yaml:"emailPwd"`
 	ToEmail      string `yaml:"toEmail"`
+}
+
+// Wechat notify
+type Wechat struct {
+	AccessTokenUrl string `yaml:"accessTokenUrl"`
+	SendUrl        string `yaml:"sendUrl"`
+	CorpId         string `yaml:"corpId"`
+	CorpSecret     string `yaml:"corpSecret"`
+	ToUser         string `yaml:"toUser"`
+	AgentId        int    `yaml:"agentId"`
 }
 
 // YamlSetting global constants are defined and configured by the user according to the file conf.yaml in conf
