@@ -6,6 +6,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/wuchunfu/CloudSync/middleware/database/kvdb"
 	"log"
+	"net/http"
 	"sync"
 	"time"
 )
@@ -311,6 +312,10 @@ func (client *ClientType) SendMessage() (bool, error) {
 		Post(client.SendUrl)
 	if err != nil {
 		return false, fmt.Errorf("invoke send api fail: %v", err)
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return false, fmt.Errorf("invoke send api fail: %v", resp.Error())
 	}
 
 	result := ResultType{}
