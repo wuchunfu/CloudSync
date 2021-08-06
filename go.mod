@@ -5,7 +5,7 @@ go 1.16
 require (
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/go-resty/resty/v2 v2.6.0
-	github.com/pkg/errors v0.9.1
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pkg/sftp v1.13.2
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.2.1
