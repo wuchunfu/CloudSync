@@ -126,7 +126,7 @@ type MessageType struct {
 	ToUser                 string        `json:"touser"`                   // 是否必须: 否 , 指定接收消息的成员，成员ID列表（多个接收者用'|'分隔，最多支持1000个）。特殊情况：指定为"@all"，则向该企业应用的全部成员发送
 	ToParty                string        `json:"toparty"`                  // 是否必须: 否 , 指定接收消息的部门，部门ID列表，多个接收者用'|'分隔，最多支持100个。当touser为"@all"时忽略本参数
 	ToTag                  string        `json:"totag"`                    // 是否必须: 否 , 指定接收消息的标签，标签ID列表，多个接收者用'|'分隔，最多支持100个。当touser为"@all"时忽略本参数
-	MsgType                string        `json:"msgtype"`                  // 是否必须: 是 , 消息类型，text,image,voice,video,file,textcard,news,mpnews,markdown
+	MsgType                string        `json:"msgtype"`                  // 是否必须: 是 , 消息类型，支持: text,image,voice,video,file,textcard,news,mpnews,markdown
 	AgentId                int           `json:"agentid"`                  // 是否必须: 是 , 企业应用的id，整型。企业内部开发，可在应用的设置页面查看；第三方服务商，可通过接口 获取企业授权信息(https://work.weixin.qq.com/api/doc/90001/90143/90372#10975/%E8%8E%B7%E5%8F%96%E4%BC%81%E4%B8%9A%E6%8E%88%E6%9D%83%E4%BF%A1%E6%81%AF) 获取该参数值
 	Safe                   int           `json:"safe"`                     // 是否必须: 否 , 表示是否是保密消息，0表示可对外分享，1表示不能分享且内容显示水印，2表示仅限在企业内分享，默认为0；注意仅mpnews类型的消息支持safe值为2，其他消息类型不支持
 	EnableIdTrans          int           `json:"enable_id_trans"`          // 是否必须: 否 , 表示是否开启id转译，0表示否，1表示是，默认0。仅第三方应用需要用到，企业自建应用可以忽略。
@@ -282,6 +282,10 @@ func (client *ClientType) SendMessage() (bool, error) {
 	msg, err := json.Marshal(client.Message)
 	if err != nil {
 		return false, fmt.Errorf("parse message fail: %v", err)
+	}
+
+	if client.SendUrl == "" {
+		return false, fmt.Errorf("miss send url")
 	}
 
 	accessToken, err := client.GetAccessToken()
