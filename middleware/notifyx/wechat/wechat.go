@@ -203,6 +203,10 @@ func (client *ClientType) RefreshAccessToken() error {
 	client.AccessToken.Mux.Lock()
 	defer client.AccessToken.Mux.Unlock()
 
+	if client.AccessTokenUrl == "" {
+		return fmt.Errorf("miss accessToken url")
+	}
+
 	accessToken := AccessTokenType{}
 	httpClient := resty.New()
 	params := map[string]string{
