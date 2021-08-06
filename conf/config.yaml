@@ -6,11 +6,8 @@ sftp:
 
 sync:
   - name: "sync 1"
-    sourcePath: "/tmp/test1"
-    targetPath: "/tmp/test1"
-  - name: "sync 2"
-    sourcePath: "/tmp/test2"
-    targetPath: "/tmp/test2"
+    sourcePath: "/tmp/test"
+    targetPath: "/tmp/test"
 
 ignoreFiles:
   - ".svn"
@@ -37,22 +34,23 @@ log:
 notify:
   # 是否开启推送服务
   isEnable: true
-  # 目前支持 smtp 邮箱,dingtalk
+  # 目前支持 smtp 邮箱, wechat, wechatbot, dingtalkbot, feishubot
   notifyType: email
   # smtp 邮箱配置
   email:
     # 邮件主题
-    emailSubject: "文件发生变更"
-    # 邮箱域名 smtp.xx.com
-    emailHost: "smtp.163.com"
+    subject: "文件发生变更"
+    # 邮箱域名 smtp.xxx.com
+    host: "smtp.163.com"
     # 通信端口
-    emailPort: 25
-    # 邮箱地址 xxx@xx.com
-    emailUser: "xxx@163.com"
+    port: 25
+    # 邮箱地址 xxx@xxx.com
+    from: "xxx@163.com"
     # 邮箱授权码（并不一定是邮箱密码） xxxxxx
-    emailPwd: "xxxxxx"
-    # 邮箱推送消息接收人
-    toEmail: "xxx@qq.com"
+    password: "xxxxxx"
+    # 邮箱推送消息接收人, 可填写多个接收人
+    to:
+      - "xxx@qq.com"
   # wechat 配置
   wechat:
     accessTokenUrl: "https://qyapi.weixin.qq.com/cgi-bin/gettoken"
@@ -65,3 +63,14 @@ notify:
     toUser: "xxx"
     # 企业应用的id，整型。企业内部开发，可在应用的设置页面查看
     agentId: 1000000
+  # wechat 机器人配置
+  wechatbot:
+    webHookUrl: "https://qyapi.weixin.qq.com/cgi-bin/webhook/send"
+    # 在终端某个群组添加机器人之后，创建者可以在机器人详情页看的该机器人特有的webhookurl
+    key: "xxxxxx"
+    # userid的列表，提醒群中的指定成员(@某个成员)，@all表示提醒所有人，如果开发者获取不到userid，可以使用mentioned_mobile_list
+    mentionedList:
+      - "xxx"
+    # 手机号列表，提醒手机号对应的群成员(@某个成员)，@all表示提醒所有人
+    mentionedMobileList:
+      - ""

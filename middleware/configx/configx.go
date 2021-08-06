@@ -41,20 +41,21 @@ type Log struct {
 
 // Notify send massage notify
 type Notify struct {
-	IsEnable   bool   `yaml:"isEnable"`
-	NotifyType string `yaml:"notifyType"`
-	Email      Email  `yaml:"email"`
-	Wechat     Wechat `yaml:"wechat"`
+	IsEnable   bool      `yaml:"isEnable"`
+	NotifyType string    `yaml:"notifyType"`
+	Email      Email     `yaml:"email"`
+	Wechat     Wechat    `yaml:"wechat"`
+	WechatBot  WechatBot `yaml:"wechatbot"`
 }
 
 // Email notify
 type Email struct {
-	EmailSubject string `yaml:"emailSubject"`
-	EmailHost    string `yaml:"emailHost"`
-	EmailPort    int    `yaml:"emailPort"`
-	EmailUser    string `yaml:"emailUser"`
-	EmailPwd     string `yaml:"emailPwd"`
-	ToEmail      string `yaml:"toEmail"`
+	Subject  string   `yaml:"subject"`
+	Host     string   `yaml:"host"`
+	Port     int      `yaml:"port"`
+	Form     string   `yaml:"from"`
+	Password string   `yaml:"password"`
+	To       []string `yaml:"to"`
 }
 
 // Wechat notify
@@ -65,6 +66,14 @@ type Wechat struct {
 	CorpSecret     string `yaml:"corpSecret"`
 	ToUser         string `yaml:"toUser"`
 	AgentId        int    `yaml:"agentId"`
+}
+
+// WechatBot notify
+type WechatBot struct {
+	WebHookUrl          string   `yaml:"webHookUrl"`
+	Key                 string   `yaml:"key"`
+	MentionedList       []string `yaml:"mentionedList"`
+	MentionedMobileList []string `yaml:"mentionedMobileList"`
 }
 
 // YamlSetting global constants are defined and configured by the user according to the file conf.yaml in conf

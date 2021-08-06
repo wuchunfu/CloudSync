@@ -10,10 +10,10 @@ type MessageType struct {
 	From        string   // 发件人
 	To          []string // 收件人
 	Cc          []string // 抄送人
-	Subject     string   // 标题
+	Subject     string   // 主题
+	Attach      string   // 附件
 	ContentType string   // 内容的类型 text/plain text/html
 	Content     string   // 内容
-	Attach      string   // 附件
 }
 
 // ClientType 发送客户端
