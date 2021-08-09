@@ -12,29 +12,17 @@ const (
 	// TEXT 文本消息
 	TEXT = "text"
 
+	// MARKDOWN markdown消息
+	MARKDOWN = "markdown"
+
 	// IMAGE 图片消息
 	IMAGE = "image"
-
-	// VOICE 语音消息
-	VOICE = "voice"
-
-	// VIDEO 视频消息
-	VIDEO = "video"
-
-	// FILE 文件消息
-	FILE = "file"
-
-	// TEXTCARD 文本卡片消息
-	TEXTCARD = "textcard"
 
 	// NEWS 图文消息
 	NEWS = "news"
 
-	// MPNEWS 图文消息(mpnews)
-	MPNEWS = "mpnews"
-
-	// MARKDOWN markdown消息
-	MARKDOWN = "markdown"
+	// FILE 文件消息
+	FILE = "file"
 )
 
 // TextType 文本类型
