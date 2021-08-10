@@ -74,3 +74,13 @@ notify:
     # 手机号列表，提醒手机号对应的群成员(@某个成员)，@all表示提醒所有人
     mentionedMobileList:
       - ""
+  # dingtalk 机器人配置
+  dingtalkbot:
+    webHookUrl: "https://oapi.dingtalk.com/robot/send"
+    accessToken: "bf29f17ef2972180bacad9adf19412f7728e5b336fcb4c152af5be8a88888888"
+    signToken: "SEC3383b31ef94081d10e5ae8c009923d738c4b92539746b40c3aec2c8e88888888"
+    atUserIds:
+      - "xxx"
+    atMobiles:
+      - ""
+    isAtAll: false

@@ -41,11 +41,12 @@ type Log struct {
 
 // Notify send massage notify
 type Notify struct {
-	IsEnable   bool      `yaml:"isEnable"`
-	NotifyType string    `yaml:"notifyType"`
-	Email      Email     `yaml:"email"`
-	Wechat     Wechat    `yaml:"wechat"`
-	WechatBot  WechatBot `yaml:"wechatbot"`
+	IsEnable    bool        `yaml:"isEnable"`
+	NotifyType  string      `yaml:"notifyType"`
+	Email       Email       `yaml:"email"`
+	Wechat      Wechat      `yaml:"wechat"`
+	WechatBot   WechatBot   `yaml:"wechatbot"`
+	DingTalkBot DingTalkBot `yaml:"dingtalkbot"`
 }
 
 // Email notify
@@ -74,6 +75,16 @@ type WechatBot struct {
 	Key                 string   `yaml:"key"`
 	MentionedList       []string `yaml:"mentionedList"`
 	MentionedMobileList []string `yaml:"mentionedMobileList"`
+}
+
+// DingTalkBot notify
+type DingTalkBot struct {
+	WebHookUrl  string   `yaml:"webHookUrl"`
+	AccessToken string   `yaml:"accessToken"`
+	SignToken   string   `yaml:"signToken"`
+	AtUserIds   []string `yaml:"atUserIds"`
+	AtMobiles   []string `yaml:"atMobiles"`
+	IsAtAll     bool     `yaml:"isAtAll"`
 }
 
 // YamlSetting global constants are defined and configured by the user according to the file conf.yaml in conf

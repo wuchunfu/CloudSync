@@ -2,6 +2,7 @@ package notifyx
 
 import (
 	"github.com/wuchunfu/CloudSync/middleware/configx"
+	"github.com/wuchunfu/CloudSync/middleware/notifyx/dingtalkbot"
 	"github.com/wuchunfu/CloudSync/middleware/notifyx/email"
 	"github.com/wuchunfu/CloudSync/middleware/notifyx/wechat"
 	"github.com/wuchunfu/CloudSync/middleware/notifyx/wechatbot"
@@ -73,7 +74,7 @@ func SendMessage(setting *configx.Notify, msg string) {
 			mentionedMobileList := setting.WechatBot.MentionedMobileList
 
 			message := &wechatbot.MessageType{
-				MsgType: wechat.TEXT, // 消息类型, 支持: text,markdown,image,news,file
+				MsgType: wechatbot.TEXT, // 消息类型, 支持: text,markdown,image,news,file
 				Text: &wechatbot.TextType{
 					Content:             msg,
 					MentionedList:       mentionedList,
@@ -81,6 +82,37 @@ func SendMessage(setting *configx.Notify, msg string) {
 				},
 			}
 			client := wechatbot.NewClient(webHookUrl, key, message)
+			ok, err := client.SendMessage()
+			if err != nil {
+				log.Printf("send failed:%v", err)
+			}
+			if ok {
+				log.Println("send successfully!")
+			} else {
+				log.Println("send failed!")
+			}
+		}
+		// 钉钉机器人发送
+		if setting.NotifyType == "dingtalkbot" {
+			webHookUrl := setting.DingTalkBot.WebHookUrl
+			accessToken := setting.DingTalkBot.AccessToken
+			signToken := setting.DingTalkBot.SignToken
+			atUserIds := setting.DingTalkBot.AtUserIds
+			atMobiles := setting.DingTalkBot.AtMobiles
+			isAtAll := setting.DingTalkBot.IsAtAll
+
+			message := &dingtalkbot.MessageType{
+				MsgType: dingtalkbot.TEXT, // 消息类型, 支持: text,markdown,image,news,file
+				Text: &dingtalkbot.TextType{
+					Content: msg,
+				},
+				At: &dingtalkbot.AtType{
+					AtUserIds: atUserIds,
+					AtMobiles: atMobiles,
+					IsAtAll:   isAtAll,
+				},
+			}
+			client := dingtalkbot.NewClient(webHookUrl, accessToken, signToken, message)
 			ok, err := client.SendMessage()
 			if err != nil {
 				log.Printf("send failed:%v", err)
