@@ -5,18 +5,21 @@
 企业内部有较多系统支撑着公司的核心业务流程，譬如CRM系统、交易系统、监控报警系统等等。通过钉钉的自定义机器人，可以将这些系统事件同步到钉钉的聊天群。
 
 > **说明**
->
 > 当前机器人尚不支持应答机制，该机制指的是群里成员在聊天@机器人的时候，钉钉回调指定的服务地址，即Outgoing机器人。
 
 ## 步骤一：获取自定义机器人Webhook
 
 - 1、选择需要添加机器人的群聊，然后依次单击 **群设置** > **智能群助手**。
 
--
+  <img src="./images/1.png" style="zoom:100%;" />
 
 - 2、在机器人管理页面选择 **自定义** 机器人，输入机器人名字并选择要发送消息的群，同时可以为机器人设置机器人头像。
 
+  <img src="./images/2.png" style="zoom:50%;" />
+
 - 3、完成必要的 [安全设置](https://developers.dingtalk.com/document/robots/customize-robot-security-settings#topic-2101465) (https://developers.dingtalk.com/document/robots/customize-robot-security-settings?spm=ding_open_doc.document.0.0.40745e59XVZzIr#topic-2101465)，勾选 **我已阅读并同意《自定义机器人服务及免责条款**》，然后单击**完成**。
+
+  <img src="./images/3.png" style="zoom:50%;" />
 
 - 4、完成安全设置后，复制出机器人的 **Webhook** 地址，可用于向这个群发送消息，格式如下：
 
@@ -25,7 +28,6 @@
   ```
 
   > **注意**
-  >
   > 请保管好此Webhook 地址，不要公布在外部网站上，泄露后有安全风险。
 
 ## 步骤二：使用自定义机器人
@@ -33,7 +35,6 @@
 获取到 **Webhook** 地址后，用户可以向这个地址发起 **HTTP POST** 请求，即可实现给该钉钉群发送消息。
 
 > **注意**
->
 > - 发起POST请求时，必须将字符集编码设置成UTF-8。
 > - 每个机器人每分钟最多发送20条。消息发送太频繁会严重影响群成员的使用体验，大量发消息的场景 (譬如系统监控报警) 可以将这些信息进行整合，通过markdown消息以摘要的形式发送到群里。
 
@@ -48,7 +49,6 @@
 使用命令行工具curl。
 
 > **说明**
->
 > 为避免出错，将以下命令逐行复制到命令行，需要将xxxxxxxx替换为真实access_token；若测试出错，请检查复制的命令是否和测试命令一致，多特殊字符会报错。
 
 ```bash
@@ -63,41 +63,42 @@ curl 'https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxx' \
 package dingtalkbot
 
 import (
-	"testing"
+   "testing"
 )
 
 // https://help.aliyun.com/document_detail/121918.html
 // 自定义机器人接入 文档: https://developers.dingtalk.com/document/robots/custom-robot-access
 // 自定义机器人安全设置 文档: https://developers.dingtalk.com/document/robots/customize-robot-security-settings
 func TestDingTalkBot(t *testing.T) {
-	webHookUrl := "https://oapi.dingtalk.com/robot/send"
-	accessToken := "bf29f17ef2972180bacad9adf19412f7728e5b336fcb4c152af5be8a88888888"
-	signToken := "SEC3383b31ef94081d10e5ae8c009923d738c4b92539746b40c3aec2c8e88888888"
-	atUserIds := []string{""}
-	atMobiles := []string{""}
-	isAtAll := false
-	msg := "test msg!"
+   webHookUrl := "https://oapi.dingtalk.com/robot/send"
+   accessToken := "bf29f17ef2972180bacad9adf19412f7728e5b336fcb4c152af5be8a88888888"
+   signToken := "SEC3383b31ef94081d10e5ae8c009923d738c4b92539746b40c3aec2c8e88888888"
+   atUserIds := []string{""}
+   atMobiles := []string{""}
+   isAtAll := false
+   msg := "test msg!"
 
-	message := &MessageType{
-		MsgType: TEXT,
-		Text: &TextType{
-			Content: msg,
-		},
-		At: &AtType{
-			AtUserIds: atUserIds,
-			AtMobiles: atMobiles,
-			IsAtAll:   isAtAll,
-		},
-	}
-	client := NewClient(webHookUrl, accessToken, signToken, message)
-	ok, err := client.SendMessage()
-	if ok {
-		t.Log("send successfully!")
-	} else {
-		t.Fatalf("send faild, error:%v", err)
-	}
+   message := &MessageType{
+      MsgType: TEXT,
+      Text: &TextType{
+         Content: msg,
+      },
+      At: &AtType{
+         AtUserIds: atUserIds,
+         AtMobiles: atMobiles,
+         IsAtAll:   isAtAll,
+      },
+   }
+   client := NewClient(webHookUrl, accessToken, signToken, message)
+   ok, err := client.SendMessage()
+   if ok {
+      t.Log("send successfully!")
+   } else {
+      t.Fatalf("send faild, error:%v", err)
+   }
 }
 ```
+
 ## 常见问题
 
 当出现以下错误时，表示消息校验未通过，请查看机器人的安全设置。
