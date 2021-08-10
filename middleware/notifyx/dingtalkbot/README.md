@@ -11,15 +11,15 @@
 
 - 1、选择需要添加机器人的群聊，然后依次单击 **群设置** > **智能群助手**。
 
-  <img src="./images/1.png" style="zoom:100%;" />
+  <img src="./images/1.png" style="zoom:50%;" />
 
 - 2、在机器人管理页面选择 **自定义** 机器人，输入机器人名字并选择要发送消息的群，同时可以为机器人设置机器人头像。
 
-  <img src="./images/2.png" style="zoom:50%;" />
+  <img src="./images/2.png" style="zoom:25%;" />
 
 - 3、完成必要的 [安全设置](https://developers.dingtalk.com/document/robots/customize-robot-security-settings#topic-2101465) (https://developers.dingtalk.com/document/robots/customize-robot-security-settings?spm=ding_open_doc.document.0.0.40745e59XVZzIr#topic-2101465)，勾选 **我已阅读并同意《自定义机器人服务及免责条款**》，然后单击**完成**。
 
-  <img src="./images/3.png" style="zoom:50%;" />
+  <img src="./images/3.png" style="zoom:25%;" />
 
 - 4、完成安全设置后，复制出机器人的 **Webhook** 地址，可用于向这个群发送消息，格式如下：
 
