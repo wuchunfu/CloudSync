@@ -5,10 +5,17 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
+	"golang.org/x/crypto/scrypt"
 	"io"
 	"log"
 	"os"
 )
+
+// CryptPassword 加密密码
+func CryptPassword(password, salt string) string {
+	dk, _ := scrypt.Key([]byte(password), []byte(salt), 16384, 8, 1, 32)
+	return fmt.Sprintf("%x", dk)
+}
 
 // GetFileMd5 获取文件的 md5 值
 func GetFileMd5(filePath string) string {
