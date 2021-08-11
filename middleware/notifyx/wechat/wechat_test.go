@@ -4,6 +4,7 @@ import (
 	"testing"
 )
 
+// 企业微信 使用手册: https://open.work.weixin.qq.com/wwopen/helpguide/index
 // 企业微信 企业内部开发 服务端API 消息推送 文档: https://work.weixin.qq.com/api/doc/90000/90135/90235
 // 企业微信 企业内部开发 服务端API 开发指南 文档: https://work.weixin.qq.com/api/doc/90000/90135/90664
 // 企业微信 企业内部开发 客户端API 群机器人 文档: https://work.weixin.qq.com/api/doc/90000/90136/91770
